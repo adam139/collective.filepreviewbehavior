@@ -3,13 +3,12 @@ from five import grok
 from zope import interface
 from plone.directives import dexterity
 
-from Products import ARFilePreview
+# from Products import ARFilePreview
 
 from collective.filepreviewbehavior.interfaces import IPreviewable
 
 
-class PreviewProvider( dexterity.DisplayForm,
-                       ARFilePreview.views.PreviewProvider ):
+class PreviewProvider( dexterity.DisplayForm):
     grok.name( 'preview_provider' )
     grok.context( IPreviewable )
     grok.template( 'fullview' )
@@ -17,9 +16,7 @@ class PreviewProvider( dexterity.DisplayForm,
 
     
     def __init__( self, *args, **kwargs ):
-        dexterity.DisplayForm.__init__( self, *args, **kwargs )
-        ARFilePreview.views.PreviewProvider.__init__( self, *args, **kwargs )
-
+        dexterity.DisplayForm.__init__( self, *args, **kwargs )       
 
     def __call__( self, *args, **kwargs ):
         request = self.context.REQUEST

@@ -7,8 +7,7 @@ setup(name='collective.filepreviewbehavior',
       version=version,
       description="Dexterity behavior for file previews based on " + \
           "Products.ARFilePreview (WARNING: Archetypes dependencies!)",
-      long_description=open("README.txt").read() + "\n" + \
-          open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
@@ -26,7 +25,7 @@ setup(name='collective.filepreviewbehavior',
       zip_safe=False,
       install_requires=[
         'setuptools',
-        'Products.ARFilePreview',
+        'plone.behavior',
         'Products.CMFCore',
         'Products.PortalTransforms',
         'five.grok',
@@ -36,9 +35,12 @@ setup(name='collective.filepreviewbehavior',
         'zope.schema',
         # -*- Extra requirements: -*-
         ],
+      extras_require={
+          'test': ['plone.app.testing',]
+          },         
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
-      target = opengever
+      target = plone
       """,
       )

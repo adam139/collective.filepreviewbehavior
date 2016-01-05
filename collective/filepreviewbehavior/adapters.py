@@ -7,19 +7,33 @@ from zope.schema import getFieldsInOrder
 
 from Products.CMFCore.utils import getToolByName
 from Products.PortalTransforms.libtransforms.utils import MissingBinary
-from Products import ARFilePreview
+# from Products import ARFilePreview
 
 from plone.dexterity.utils import iterSchemata
 from plone.rfc822.interfaces import IPrimaryField
 
+
+from DateTime import DateTime
+
+from zope.interface import implements
+# from zope.component.exceptions import ComponentLookupError
+from zope.traversing.adapters import Traverser
+from zope.annotation.interfaces import IAnnotations
+
+from BTrees.OOBTree import OOBTree
+from Products.CMFCore.utils import getToolByName
+from collective.filepreviewbehavior.interfaces import IPreviewable
+from plone.dexterity.interfaces import IDexterityContent
+
+
 from collective.filepreviewbehavior import interfaces
+from plone.app.contenttypes.interfaces import IFile
 
 LOG = logging.getLogger('collective.filepreviewbehavior')
 
-class ToPreviewableObject( ARFilePreview.adapters.ToPreviewableObject,
-                           grok.Adapter ):
-    grok.implements( ARFilePreview.interfaces.IPreviewable )
-    grok.context( interfaces.IPreviewable )
+class ToPreviewableObject(grok.Adapter):
+    grok.implements( IPreviewable )
+    grok.context( IDexterityContent )
 
 
     class _replacer(object):
@@ -52,7 +66,24 @@ class ToPreviewableObject( ARFilePreview.adapters.ToPreviewableObject,
                 if IPrimaryField.providedBy( field ):
                     return field
         return None
-
+    
+    def __init__(self, context):
+        self.key         = 'htmlpreview'
+        self.context     = context
+        self.annotations = IAnnotations(context)
+        if not self.annotations.get(self.key, None):
+            self.annotations[self.key] = OOBTree()
+        if not self.annotations[self.key].get('html', None):
+            self.annotations[self.key]['html'] = ""
+        if not self.annotations[self.key].get('subobjects', None):
+            self.annotations[self.key]['subobjects'] = OOBTree()
+    
+    def hasPreview(self):
+        return bool(len(self.annotations[self.key]['html']))
+    
+    def setPreview(self, preview):
+        self.annotations[self.key]['html'] = preview
+        self.context.reindexObject()
 
     def getPreview( self, mimetype='text/html' ):
         data = self.annotations[self.key]['html']
@@ -66,6 +97,20 @@ class ToPreviewableObject( ARFilePreview.adapters.ToPreviewableObject,
                       ).decode('utf8')
         return data
 
+    def setSubObject(self, name, data):
+        mtr = self.context.mimetypes_registry
+        mime = mtr.classify(data, filename=name)
+        mime = str(mime) or 'application/octet-stream'
+        self.annotations[self.key]['subobjects'][name] = (data, mime)
+    
+    def getSubObject(self, id):
+        if id in self.annotations[self.key]['subobjects'].keys():
+            return self.annotations[self.key]['subobjects'][id]
+        else:
+            raise AttributeError
+    
+    def clearSubObjects(self):
+        self.annotations[self.key]['subobjects'] = OOBTree()
     
     def buildAndStorePreview(self):
         self.clearSubObjects()
@@ -99,5 +144,13 @@ class ToPreviewableObject( ARFilePreview.adapters.ToPreviewableObject,
         self.setPreview(html_converted.decode('utf-8', "replace"))
         self.context.reindexObject()
 
-
+def previewIndexWrapper(object, portal, **kwargs):
+    data = object.SearchableText()
+    try:
+        obj = IPreviewable(object)
+        preview = obj.getPreview(mimetype="text/plain")
+        return " ".join([data, preview.encode('utf-8')])
+    except:
+        # The catalog expects AttributeErrors when a value can't be found
+        return data
 
