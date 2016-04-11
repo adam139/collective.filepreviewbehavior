@@ -30,7 +30,7 @@ class AssignRoles(object):
 #     adapts(Interface)
     adapts(IFile)    
 #     adapts(IProject)    
-    enabled = [IPreviewAware]
+    enabled = [IPreviewable]
 
     def __init__(self, context):
         self.context = context

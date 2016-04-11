@@ -24,16 +24,21 @@ from BTrees.OOBTree import OOBTree
 from Products.CMFCore.utils import getToolByName
 from collective.filepreviewbehavior.interfaces import IPreviewable
 from plone.dexterity.interfaces import IDexterityContent
-
+from zope.component import adapter
+from zope.interface import implementer
+from zope.interface import provider
 
 from collective.filepreviewbehavior import interfaces
 from plone.app.contenttypes.interfaces import IFile
 
 LOG = logging.getLogger('collective.filepreviewbehavior')
 
-class ToPreviewableObject(grok.Adapter):
-    grok.implements( IPreviewable )
-    grok.context( IDexterityContent )
+@implementer(IPreviewable)
+@adapter(IDexterityContent)
+class ToPreviewableObject(object):
+# class ToPreviewableObject(grok.Adapter):
+#     grok.implements(IPreviewable  )
+#     grok.context( IDexterityContent )
 
 
     class _replacer(object):
@@ -60,12 +65,7 @@ class ToPreviewableObject(grok.Adapter):
             return result
 
 
-    def getPrimaryField( self ):
-        for schema in iterSchemata( self.context ):
-            for name, field in getFieldsInOrder( schema ):
-                if IPrimaryField.providedBy( field ):
-                    return field
-        return None
+
     
     def __init__(self, context):
         self.key         = 'htmlpreview'
@@ -85,11 +85,18 @@ class ToPreviewableObject(grok.Adapter):
         self.annotations[self.key]['html'] = preview
         self.context.reindexObject()
 
+    def getPrimaryField( self ):
+        for schema in iterSchemata( self.context ):
+            for name, field in getFieldsInOrder( schema ):
+                if IPrimaryField.providedBy( field ):
+                    return field
+        return None
+        
     def getPreview( self, mimetype='text/html' ):
         data = self.annotations[self.key]['html']
         if mimetype != 'text/html' and data:
             transforms = getToolByName( self.context, 'portal_transforms' )
-            primary = self.getPreview()
+            primary = self.getPrimaryField()
             filename = primary.get( self.context ).filename + '.html'
             return str( transforms.convertTo( mimetype, data.encode('utf8'),
                                               mimetype = 'text/html',

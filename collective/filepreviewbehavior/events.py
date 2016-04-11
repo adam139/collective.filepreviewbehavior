@@ -31,10 +31,12 @@ __docformat__ = 'plaintext'
 __licence__ = 'GPL'
 
 from Acquisition import aq_base
-
+from five import grok
+# from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from collective.filepreviewbehavior.interfaces import IPreviewable
 
-
+@grok.subscribe(IPreviewable,IObjectAddedEvent)
 def buildAndStorePreview(obj, event):
     """ """
     if hasattr(obj,'buildPreview'):
