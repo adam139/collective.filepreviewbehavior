@@ -9,10 +9,10 @@ from collective.filepreviewbehavior.interfaces import IPreviewable
 
 
 class PreviewProvider( dexterity.DisplayForm):
-    grok.name( 'preview_provider' )
-    grok.context( IPreviewable )
-    grok.template( 'fullview' )
-    grok.require( 'zope2.View' )
+#     grok.name( 'preview_provider' )
+#     grok.context( IPreviewable )
+#     grok.template( 'fullview' )
+#     grok.require( 'zope2.View' )
 
     
     def __init__( self, *args, **kwargs ):
@@ -29,18 +29,18 @@ class PreviewProvider( dexterity.DisplayForm):
         return dexterity.DisplayForm.__call__( self, *args, **kwargs )
 
 
-
-class FileAsDoc( dexterity.DisplayForm ):
-    grok.name( 'file_asdoc' )
-    grok.context( IPreviewable )
-    grok.template( 'file_asdoc' )
-    grok.require( 'zope2.View' )
-
-
-
-class FilePreview( dexterity.DisplayForm ):
-    grok.name( 'file_preview' )
-    grok.context( IPreviewable )
-    grok.template( 'file_preview' )
-    grok.require( 'zope2.View' )
+# 
+# class FileAsDoc( dexterity.DisplayForm ):
+#     grok.name( 'file_asdoc' )
+#     grok.context( IPreviewable )
+#     grok.template( 'file_asdoc' )
+#     grok.require( 'zope2.View' )
+# 
+# 
+# 
+# class FilePreview( dexterity.DisplayForm ):
+#     grok.name( 'file_preview' )
+#     grok.context( IPreviewable )
+#     grok.template( 'file_preview' )
+#     grok.require( 'zope2.View' )
 

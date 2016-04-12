@@ -4,6 +4,7 @@
         xmlns:five="http://namespaces.zope.org/five"
         xmlns:i18n="http://namespaces.zope.org/i18n"        
         xmlns:plone="http://namespaces.plone.org/plone"
+        xmlns:browser="http://namespaces.zope.org/browser"
         i18n_domain="collective.filepreviewbehavior">
 
     <!-- Include configuration for dependencies listed in setup.py -->
@@ -21,7 +22,30 @@
             for="plone.dexterity.interfaces.IDexterityContent"
             factory=".adapters.ToPreviewableObject"
             />
-
+    <browser:pages
+        for="plone.app.contenttypes.interfaces.IFile"
+        class=".views.PreviewProvider"
+        permission="zope2.View">
+        
+    <browser:page
+        name="preview_provider"
+        template="views_templates/fullview.pt"
+        menu="plone_displayviews"
+        title="File full view"
+        />          
+    <browser:page
+        name="file_asdoc"
+        template="views_templates/file_asdoc.pt"
+        menu="plone_displayviews"
+        title="File as doc view"
+        /> 
+     <browser:page
+        name="file_preview"
+        template="views_templates/file_preview.pt"
+        menu="plone_displayviews"
+        title="File preview"
+        />                          
+  </browser:pages>
     <subscriber
             for=".interfaces.IPreviewable
                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
