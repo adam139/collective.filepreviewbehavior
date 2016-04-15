@@ -23,6 +23,7 @@ from zope.annotation.interfaces import IAnnotations
 from BTrees.OOBTree import OOBTree
 from Products.CMFCore.utils import getToolByName
 from collective.filepreviewbehavior.interfaces import IPreviewable
+from collective.filepreviewbehavior.interfaces import IPreviewAware
 from plone.dexterity.interfaces import IDexterityContent
 from zope.component import adapter
 from zope.interface import implementer
@@ -150,6 +151,32 @@ class ToPreviewableObject(object):
         #store the html in the HTMLPreview field for preview
         self.setPreview(html_converted.decode('utf-8', "replace"))
         self.context.reindexObject()
+
+
+##  use dexteritytextindexer to build searchableText indexer
+# from collective import dexteritytextindexer
+# from zope.component import adapts
+# from zope.interface import implements
+# 
+# class FileContentSearchableTextExtender(object):
+#     adapts(IPreviewAware)
+#     implements(dexteritytextindexer.IDynamicTextIndexExtender)
+# 
+#     def __init__(self, context):
+#         self.context = context
+# 
+#     def __call__(self):
+#         """Extend the searchable text with file content"""
+#         object = self.context
+#         data = object.SearchableText()
+#         try:
+#             obj = IPreviewable(object)
+#             preview = obj.getPreview(mimetype="text/plain")
+#             return " ".join([data, preview.encode('utf-8')])
+#         except:
+#             return data
+        
+
 
 def previewIndexWrapper(object, portal, **kwargs):
     data = object.SearchableText()

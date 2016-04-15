@@ -22,34 +22,11 @@
             for="plone.dexterity.interfaces.IDexterityContent"
             factory=".adapters.ToPreviewableObject"
             />
-    <browser:pages
-        for="plone.app.contenttypes.interfaces.IFile"
-        class=".views.PreviewProvider"
-        permission="zope2.View">
-        
-    <browser:page
-        name="preview_provider"
-        template="views_templates/fullview.pt"
-        menu="plone_displayviews"
-        title="File full view"
-        />          
-    <browser:page
-        name="file_asdoc"
-        template="views_templates/file_asdoc.pt"
-        menu="plone_displayviews"
-        title="File as doc view"
-        /> 
-     <browser:page
-        name="file_preview"
-        template="views_templates/file_preview.pt"
-        menu="plone_displayviews"
-        title="File preview"
-        />                          
-  </browser:pages>
+
     <subscriber
-            for=".interfaces.IPreviewable
+            for="collective.filepreviewbehavior.interfaces.IPreviewAware
                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
             handler=".events.buildAndStorePreview"
             />
-
+  <include package=".browser" />
 </configure>
