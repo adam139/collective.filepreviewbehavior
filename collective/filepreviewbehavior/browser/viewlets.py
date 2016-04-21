@@ -38,7 +38,9 @@ class FilePreview(base.ViewletBase):
 
     def hasPreview(self):
         "has preview content?"
-        content_type = self.context.file.contentType
+        content_type = self.previewer.getFileType()
+#         import pdb
+#         pdb.set_trace()
         isplaintext = content_type.startswith('text')
         
         return not isplaintext and self.previewer.hasPreview() and bool(self.preview)

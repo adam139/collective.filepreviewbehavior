@@ -76,6 +76,8 @@ class ToPreviewableObject(object):
             self.annotations[self.key] = OOBTree()
         if not self.annotations[self.key].get('html', None):
             self.annotations[self.key]['html'] = ""
+        if not self.annotations[self.key].get('filetype', None):
+            self.annotations[self.key]['filetype'] = ""            
         if not self.annotations[self.key].get('subobjects', None):
             self.annotations[self.key]['subobjects'] = OOBTree()
     
@@ -92,6 +94,13 @@ class ToPreviewableObject(object):
                 if IPrimaryField.providedBy( field ):
                     return field
         return None
+
+    def getFileType( self, defaulttype='text/html' ):
+        type = self.annotations[self.key]['filetype']
+        if type=="":
+            return defaulttype
+        else:
+            return type    
         
     def getPreview( self, mimetype='text/html' ):
         data = self.annotations[self.key]['html']
@@ -127,6 +136,9 @@ class ToPreviewableObject(object):
         file = self.getPrimaryField().get( self.context )
         data = None
         if file:
+            filetype = file.contentType
+            if  bool(filetype):
+                self.annotations[self.key]['filetype'] = filetype
             try:
                 data = transforms.convertTo('text/html', file.data, filename=file.filename)
             except MissingBinary, e:
@@ -152,6 +164,40 @@ class ToPreviewableObject(object):
         self.setPreview(html_converted.decode('utf-8', "replace"))
         self.context.reindexObject()
 
+
+    def UpdateFileInfo(self):
+        self.clearSubObjects()
+        transforms = getToolByName(self.context, 'portal_transforms')
+        # -- get the primary field the dexterity way
+        file = self.getPrimaryField().get( self.context )
+        data = None
+        if file:
+
+            filetype = self.annotations[self.key]['filetype']
+            file.contentType = filetype
+            try:
+                data = transforms.convertTo('text/html', file.data, filename=file.filename)
+            except MissingBinary, e:
+                LOG.error(str(e))
+        
+        if data is None:
+            self.setPreview(u"")
+            return
+        
+        #get the html code
+        html_converted = data.getData()
+        #update internal links
+        #remove bad character '\xef\x81\xac' from HTMLPreview
+        html_converted = re.sub('\xef\x81\xac', "", html_converted)
+        # patch image sources since html base is that of our parent
+        subobjs = data.getSubObjects()
+        if len(subobjs)>0:
+            for id, data in subobjs.items():
+                self.setSubObject(id, data)
+            html_converted = self._re_imgsrc.sub(self._replacer(subobjs.keys(), self.context), html_converted)
+        #store the html in the HTMLPreview field for preview
+        self.setPreview(html_converted.decode('utf-8', "replace"))
+        self.context.reindexObject()
 
 ##  use dexteritytextindexer to build searchableText indexer
 # from collective import dexteritytextindexer

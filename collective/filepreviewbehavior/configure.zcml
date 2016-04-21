@@ -28,5 +28,10 @@
                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
             handler=".events.buildAndStorePreview"
             />
+    <subscriber
+            for="collective.filepreviewbehavior.interfaces.IPreviewAware
+                 zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+            handler=".events.UpdateFileInfo"
+            />            
   <include package=".browser" />
 </configure>

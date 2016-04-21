@@ -46,3 +46,10 @@ def buildAndStorePreview(obj, event):
             return
     print "BUILD AND STORE PREVIEW %s" % ( obj.getPhysicalPath() , )
     IPreviewable(obj).buildAndStorePreview()
+
+def UpdateFileInfo(obj, event):
+    """ """
+    print "Update file information %s" % ( obj.getPhysicalPath() , )
+    IPreviewable(obj).UpdateFileInfo()    
+
+        
