@@ -115,8 +115,7 @@ class ToPreviewableObject(object):
         return data
 
     def setSubObject(self, name, data):
-        import pdb
-        pdb.set_trace()
+
         mtr = self.context.mimetypes_registry
         mime = mtr.classify(data, filename=name)
         mime = str(mime) or 'application/octet-stream'
