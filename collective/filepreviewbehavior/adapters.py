@@ -95,7 +95,7 @@ class ToPreviewableObject(object):
                     return field
         return None
 
-    def getFileType( self, defaulttype='text/html' ):
+    def getFileType( self, defaulttype='text/plain' ):
         type = self.annotations[self.key]['filetype']
         if type=="":
             return defaulttype
@@ -115,6 +115,8 @@ class ToPreviewableObject(object):
         return data
 
     def setSubObject(self, name, data):
+        import pdb
+        pdb.set_trace()
         mtr = self.context.mimetypes_registry
         mime = mtr.classify(data, filename=name)
         mime = str(mime) or 'application/octet-stream'

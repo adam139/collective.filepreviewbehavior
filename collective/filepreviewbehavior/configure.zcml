@@ -25,7 +25,7 @@
 
     <subscriber
             for="collective.filepreviewbehavior.interfaces.IPreviewAware
-                 zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+                 collective.filepreviewbehavior.interfaces.IPreviewableFileCreatedEvent"
             handler=".events.buildAndStorePreview"
             />
     <subscriber
