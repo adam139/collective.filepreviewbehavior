@@ -45,7 +45,6 @@ class PreviewableFileCreatedEvent(ObjectEvent):
 def buildAndStorePreview(obj, event):
     """ """
     if hasattr(obj,'buildPreview'):
-
         if not obj.buildPreview:
             print "buildPreview == False, we don't have to build the preview"
             return

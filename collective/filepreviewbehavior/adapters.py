@@ -28,9 +28,11 @@ from plone.dexterity.interfaces import IDexterityContent
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import provider
+from zope.event import notify
 
 from collective.filepreviewbehavior import interfaces
 from plone.app.contenttypes.interfaces import IFile
+from emc.bokeh.utils import PyfileAddedEvent
 
 LOG = logging.getLogger('collective.filepreviewbehavior')
 
@@ -86,7 +88,11 @@ class ToPreviewableObject(object):
     
     def setPreview(self, preview):
         self.annotations[self.key]['html'] = preview
-        self.context.reindexObject()
+#         self.context.reindexObject()
+
+#         if self.context.portal_type == "emc.bokeh.codefile":
+#             notify(PyfileAddedEvent(self.context))
+        
 
     def getPrimaryField( self ):
         for schema in iterSchemata( self.context ):

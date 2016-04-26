@@ -22,16 +22,17 @@
             for="plone.dexterity.interfaces.IDexterityContent"
             factory=".adapters.ToPreviewableObject"
             />
-
+ 
     <subscriber
             for="collective.filepreviewbehavior.interfaces.IPreviewAware
                  collective.filepreviewbehavior.interfaces.IPreviewableFileCreatedEvent"
             handler=".events.buildAndStorePreview"
             />
+
     <subscriber
             for="collective.filepreviewbehavior.interfaces.IPreviewAware
                  zope.lifecycleevent.interfaces.IObjectModifiedEvent"
             handler=".events.UpdateFileInfo"
-            />            
+            />          
   <include package=".browser" />
 </configure>
