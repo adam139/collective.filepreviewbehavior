@@ -43,7 +43,7 @@ class ToPreviewableObject(object):
 #     grok.implements(IPreviewable  )
 #     grok.context( IDexterityContent )
 
-
+    _re_imgsrc = re.compile('<[iI][mM][gG]([^>]*) [sS][rR][cC]="([^">]*)"([^>]*)>')
     class _replacer(object):
         
         def __init__( self, sublist, instance ):
