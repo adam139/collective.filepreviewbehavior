@@ -33,6 +33,7 @@
             for="collective.filepreviewbehavior.interfaces.IPreviewAware
                  zope.lifecycleevent.interfaces.IObjectModifiedEvent"
             handler=".events.UpdateFileInfo"
-            />          
-  <include package=".browser" />
+            />
+<!-- cancel file preview                       
+  <include package=".browser" /> -->
 </configure>
