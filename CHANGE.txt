@@ -1,0 +1,9 @@
+collective.filepreviewbehavior
+========================
+
+dev1.2
+---------
+
+- add CHANGE.txt recoder history
+- merge dev1.2 to master
+
