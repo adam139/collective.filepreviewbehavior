@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = open('collective/filepreviewbehavior/version.txt').read().strip()
+version = "1.0"
 
 setup(name='collective.filepreviewbehavior',
       version=version,
